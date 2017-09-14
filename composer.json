@@ -1,0 +1,31 @@
+{
+	"name": "shineunited/silex-timeline",
+	"type": "library",
+	"keywords": [
+		"timeline",
+		"silex",
+		"twig"
+	],
+	"license": "MIT",
+	"require": {
+		"php": ">=5.5",
+		"silex/silex": "^1.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~4.0|~5.0",
+		"twig/twig": "^1.33"
+	},
+	"suggest": {
+		"twig/twig": "Allow use of timeline inside of twig templates."
+	},
+	"autoload": {
+		"psr-4": {
+			"ShineUnited\\Silex\\Timeline\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"ShineUnited\\Silex\\Timeline\\Tests\\": "tests/"
+		}
+	}
+}
