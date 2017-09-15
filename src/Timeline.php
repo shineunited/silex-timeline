@@ -60,6 +60,10 @@ class Timeline extends \ArrayObject {
 
 	public function offsetUnset($index) {
 		$index = $this->normalizeIndex($index);
+		if(!$this->offsetExists($index)) {
+			return;
+		}
+
 		if($index == 'now') {
 			throw new \InvalidArgumentException('Unsetting the \"now\" epoch is forbidden');
 		}

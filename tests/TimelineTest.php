@@ -215,7 +215,7 @@ class TimelineTest extends \PHPUnit_Framework_TestCase {
 		}
 
 		for($count = 1; $count <= 10; $count++) {
-			$index = 'missing-' . str_pad($count++, 3, '0', STR_PAD_LEFT);
+			$index = 'missing-' . str_pad($count, 3, '0', STR_PAD_LEFT);
 			$tests['fake-' . $index] = [$index];
 		}
 
