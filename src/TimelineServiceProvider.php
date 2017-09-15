@@ -4,22 +4,25 @@ namespace ShineUnited\Silex\Timeline;
 
 use ShineUnited\Silex\Timeline\Timeline;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 
-class TimelineServiceProvider implements ServiceProviderInterface {
+class TimelineServiceProvider implements ServiceProviderInterface, BootableProviderInterface {
 
-	public function register(Application $app) {
-		$app['timeline'] = $app->share(function() use ($app) {
+	public function register(Container $app) {
+		$app['timeline'] = function() use ($app) {
 			$timeline = new Timeline($app['timeline.timezone'], $app['timeline.epochs']);
 
 			return $timeline;
-		});
+		};
 
 		if(!isset($app['timeline.timezone'])) {
 			$app['timeline.timezone'] = 'UTC';
@@ -30,9 +33,9 @@ class TimelineServiceProvider implements ServiceProviderInterface {
 		}
 
 		if(!isset($app['timeline.debug'])) {
-			$app['timeline.debug'] = function() use ($app) {
+			$app['timeline.debug'] = $app->factory(function() use ($app) {
 				return $app['debug'];
-			};
+			});
 		}
 
 		if(!isset($app['timeline.debug.route'])) {
@@ -47,9 +50,9 @@ class TimelineServiceProvider implements ServiceProviderInterface {
 	public function boot(Application $app) {
 		// extend twig if present
 		if(isset($app['twig'])) {
-			$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
+			$app['twig'] = $app->extend('twig', function($twig, $app) {
 				$twig->addExtension(new TimelineExtension($app['timeline']));
-			}));
+			});
 		}
 
 		if($app['timeline.debug']) {
