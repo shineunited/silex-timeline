@@ -62,7 +62,6 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 		$timezone = new \DateTimeZone('UTC');
 		$epoch = new Epoch('now', $timezone);
 
-		//$this->expectException(\UnexpectedValueException::class);
 		$epoch->getTimeline();
 	}
 
@@ -82,9 +81,11 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 *	@dataProvider	comparisonProvider
 	 */
-	public function testCompareTo($time1, $timezone1, $time2, $timezone2, $diff) {
-		$epoch1 = new Epoch($time1, new \DateTimeZone($timezone1));
-		$epoch2 = new Epoch($time2, new \DateTimeZone($timezone2));
+	public function testCompareTo($datetime1, $datetime2, $diff) {
+		$timezone = new \DateTimeZone('UTC');
+
+		$epoch1 = new Epoch($datetime1, $timezone);
+		$epoch2 = new Epoch($datetime2, $timezone);
 
 		$this->assertEquals($diff, $epoch1->compareTo($epoch2));
 	}
@@ -92,9 +93,11 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 *	@dataProvider	comparisonProvider
 	 */
-	public function testIsBefore($time1, $timezone1, $time2, $timezone2, $diff) {
-		$epoch1 = new Epoch($time1, new \DateTimeZone($timezone1));
-		$epoch2 = new Epoch($time2, new \DateTimeZone($timezone2));
+	public function testIsBefore($datetime1, $datetime2, $diff) {
+		$timezone = new \DateTimeZone('UTC');
+
+		$epoch1 = new Epoch($datetime1, $timezone);
+		$epoch2 = new Epoch($datetime2, $timezone);
 
 		if($diff < 0) {
 			$this->assertTrue($epoch1->isBefore($epoch2));
@@ -106,9 +109,11 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 *	@dataProvider	comparisonProvider
 	 */
-	public function testIsAfter($time1, $timezone1, $time2, $timezone2, $diff) {
-		$epoch1 = new Epoch($time1, new \DateTimeZone($timezone1));
-		$epoch2 = new Epoch($time2, new \DateTimeZone($timezone2));
+	public function testIsAfter($datetime1, $datetime2, $diff) {
+		$timezone = new \DateTimeZone('UTC');
+
+		$epoch1 = new Epoch($datetime1, $timezone);
+		$epoch2 = new Epoch($datetime2, $timezone);
 
 		if($diff < 0) {
 			$this->assertFalse($epoch1->isAfter($epoch2));
@@ -124,257 +129,98 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 		// datetime1, datetime2, diff (seconds)
 
 		$tests['before1'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:01',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'15-Aug-05 15:52:01 +0000',
 			-1
 		];
 
 		$tests['before2'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:02',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'15-Aug-05 15:52:02 +0000',
 			-2
 		];
 
 		$tests['before3'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-06 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'15-Aug-06 15:52:00 +0000',
 			-1 * 365 * 24 * 60 * 60
 		];
 
 		$tests['before4'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Sep-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'15-Sep-05 15:52:00 +0000',
 			-1 * 31 * 24 * 60 * 60
 		];
 
 		$tests['before5'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'16-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'16-Aug-05 15:52:00 +0000',
 			-1 * 24 * 60 * 60
 		];
 
 		$tests['match1'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			0
 		];
 
 		$tests['match2'] = [
-			'15-Aug-05 15:52:00',
-			'UTC', //'+0000',
+			'15-Aug-05 15:52:00 +0000',
 			'15-Aug-05 20:52:00 +0500',
-			'UTC', //'+0500',
 			0
 		];
 
 		$tests['match3'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
 			'15-Aug-05 20:52:00 +0500',
-			'UTC', //'+0500',
 			0
 		];
 
 		$tests['match4'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
 			'16-Aug-05 00:52:00 +0900',
-			'UTC', //'+0900',
 			0
 		];
 
 		$tests['match5'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:00 +0000',
 			'15-Aug-05 21:22:00 +0530',
-			'UTC', //'+0530',
 			0
 		];
 
 		$tests['after1'] = [
-			'15-Aug-05 15:52:01',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:01 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			1
 		];
 
 		$tests['after2'] = [
-			'15-Aug-05 15:52:02',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-05 15:52:02 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			2
 		];
 
 		$tests['after3'] = [
-			'15-Aug-06 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Aug-06 15:52:00 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			365 * 24 * 60 * 60
 		];
 
 		$tests['after4'] = [
-			'15-Sep-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'15-Sep-05 15:52:00 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			31 * 24 * 60 * 60
 		];
 
 		$tests['after5'] = [
-			'16-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
+			'16-Aug-05 15:52:00 +0000',
+			'15-Aug-05 15:52:00 +0000',
 			24 * 60 * 60
 		];
 
 		return $tests;
 	}
 
-/*
-	public function comparisonProvider() {
-		$tests = [];
-
-		// each test is an array of the following:
-		// time1, timezone1, time2, timezone2, diff
-		$tests['before1'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:01',
-			'UTC',
-			-1
-		];
-
-		$tests['before2'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:02',
-			'UTC',
-			-2
-		];
-
-		$tests['before3'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-06 15:52:00',
-			'UTC',
-			-1 * 365 * 24 * 60 * 60
-		];
-
-		$tests['before4'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Sep-05 15:52:00',
-			'UTC',
-			-1 * 31 * 24 * 60 * 60
-		];
-
-		$tests['before5'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'16-Aug-05 15:52:00',
-			'UTC',
-			-1 * 24 * 60 * 60
-		];
-
-		$tests['match1'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			0
-		];
-
-		$tests['match2'] = [
-			'15-Aug-05 15:52:00',
-			'+0000',
-			'15-Aug-05 20:52:00',
-			'+0500',
-			0
-		];
-
-		$tests['match3'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 20:52:00',
-			'+0500',
-			0
-		];
-
-		$tests['match4'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'16-Aug-05 00:52:00',
-			'+0900',
-			0
-		];
-
-		$tests['match5'] = [
-			'15-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 21:22:00',
-			'+0530',
-			0
-		];
-
-		$tests['after1'] = [
-			'15-Aug-05 15:52:01',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			1
-		];
-
-		$tests['after2'] = [
-			'15-Aug-05 15:52:02',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			2
-		];
-
-		$tests['after3'] = [
-			'15-Aug-06 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			365 * 24 * 60 * 60
-		];
-
-		$tests['after4'] = [
-			'15-Sep-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			31 * 24 * 60 * 60
-		];
-
-		$tests['after5'] = [
-			'16-Aug-05 15:52:00',
-			'UTC',
-			'15-Aug-05 15:52:00',
-			'UTC',
-			24 * 60 * 60
-		];
-
-		return $tests;
-	}
-*/
 	/**
 	 *	@dataProvider	comparisonExceptionProvider
 	 *	@expectedException	InvalidArgumentException
@@ -382,7 +228,6 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 	public function testCompareToException($value) {
 		$epoch = new Epoch('now', new \DateTimeZone('UTC'));
 
-		//$this->expectException(\InvalidArgumentException::class);
 		$epoch->compareTo($value);
 	}
 
