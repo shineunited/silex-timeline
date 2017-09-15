@@ -8,6 +8,14 @@ use ShineUnited\Silex\Timeline\Timeline;
 class Epoch extends \DateTime {
 	private $timeline;
 
+	public function hasTimeline() {
+		if($this->timeline instanceof Timeline) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function getTimeline() {
 		if(!$this->timeline instanceof Timeline) {
 			throw new \UnexpectedValueException('Missing/Invalid Timeline Object');
@@ -37,15 +45,15 @@ class Epoch extends \DateTime {
 			throw new \InvalidArgumentException('Invalid time specified, must be DateTimeInterface or string, ' . gettype($time) . ' given');
 		}
 
-		$timeline = $this->getTimeline();
-
-		if(isset($timeline[$time])) {
-			// string epoch exists in timeline
-			return $timestamp - $timeline->offsetGet($time)->getTimestamp();
+		if($this->hasTimeline()) {
+			$timeline = $this->getTimeline();
+			if($timeline->offsetExists($time)) {
+				return $timestamp - $timeline->offsetGet($time)->getTimestamp();
+			}
 		}
 
-		$time = new \DateTime($time, $timeline->offsetGet('now')->getTimezone());
-		return $timestamp - $time->getTimestamp();
+		$datetime = new \DateTime($time, $timeline->offsetGet('now')->getTimezone());
+		return $timestamp - $datetime->getTimestamp();
 	}
 
 	public function isBefore($time) {
@@ -64,17 +72,13 @@ class Epoch extends \DateTime {
 		return false;
 	}
 
-	/*
-	public function isPast() {
-		$timeline = $this->getTimeline();
-		return $timeline->offsetGet('now')->isAfter($this);
+	public function isUpcoming() {
+		return $this->getTimeline()->isUpcoming($this);
 	}
 
-	public function isFuture() {
-		$timeline = $this->getTimeline();
-		return $timeline->offsetGet('now')->isBefore($this);
+	public function isComplete() {
+		return $this->getTimeline()->isComplete($this);
 	}
-	*/
 
 	public static function createFromDateTime(\DateTimeInterface $datetime) {
 		return new Epoch(

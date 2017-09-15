@@ -25,12 +25,20 @@ class Timeline extends \ArrayObject {
 		}
 	}
 
-	public function isBefore($time) {
+	public function isUpcoming($time) {
 		return $this->offsetGet('now')->isBefore($time);
 	}
 
-	public function isAfter($time) {
+	public function isComplete($time) {
 		return $this->offsetGet('now')->isAfter($time);
+	}
+
+	public function isBefore($time) {
+		return $this->isUpcoming($time);
+	}
+
+	public function isAfter($time) {
+		return $this->isComplete($time);
 	}
 
 	public function compareEpochs($epoch1, $epoch2, $function = 'compareTo') {

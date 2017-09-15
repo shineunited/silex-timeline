@@ -40,14 +40,14 @@ class TimelineExtension extends \Twig_Extension implements \Twig_Extension_Globa
 		return [
 			new \Twig_SimpleFunction('isBefore', [$this, 'isBeforeFunction']),
 			new \Twig_SimpleFunction('isAfter', [$this, 'isAfterFunction']),
-			new \Twig_SimpleFunction('isPast', [$this, 'isPastFunction']),
+			new \Twig_SimpleFunction('isComplete', [$this, 'isCompleteFunction']),
 			new \Twig_SimpleFunction('isUpcoming', [$this, 'isUpcomingFunction'])
 		];
 	}
 
 	public function getTests() {
 		return [
-			new \Twig_SimpleTest('past', [$this, 'isPastTest']),
+			new \Twig_SimpleTest('complete', [$this, 'isCompleteTest']),
 			new \Twig_SimpleTest('upcoming', [$this, 'isUpcomingTest'])
 		];
 	}
@@ -60,7 +60,7 @@ class TimelineExtension extends \Twig_Extension implements \Twig_Extension_Globa
 		return $this->timeline->compareEpochs('now', $epoch, 'isAfter');
 	}
 
-	public function isPastFunction($epoch) {
+	public function isCompleteFunction($epoch) {
 		return $this->timeline->compareEpochs('now', $epoch, 'isAfter');
 	}
 
@@ -68,7 +68,7 @@ class TimelineExtension extends \Twig_Extension implements \Twig_Extension_Globa
 		return $this->timeline->compareEpochs('now', $epoch, 'isBefore');
 	}
 
-	public function isPastTest($epoch) {
+	public function isCompleteTest($epoch) {
 		return $this->timeline->compareEpochs('now', $epoch, 'isAfter');
 	}
 
