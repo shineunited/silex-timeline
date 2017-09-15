@@ -172,9 +172,9 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 
 		$tests['match2'] = [
 			'15-Aug-05 15:52:00',
-			'+00:00',
+			'+0000',
 			'15-Aug-05 20:52:00',
-			'+05:00',
+			'+0500',
 			0
 		];
 
@@ -182,7 +182,7 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 			'15-Aug-05 15:52:00',
 			'UTC',
 			'15-Aug-05 20:52:00',
-			'+05:00',
+			'+0500',
 			0
 		];
 
@@ -190,7 +190,7 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 			'15-Aug-05 15:52:00',
 			'UTC',
 			'16-Aug-05 00:52:00',
-			'+09:00',
+			'+0900',
 			0
 		];
 
@@ -198,7 +198,7 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 			'15-Aug-05 15:52:00',
 			'UTC',
 			'15-Aug-05 21:22:00',
-			'+05:30',
+			'+0530',
 			0
 		];
 
