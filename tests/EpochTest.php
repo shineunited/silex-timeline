@@ -247,7 +247,7 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 *	@dataProvider	comparisonExceptionProvider
-	 *	@expectedException	UnexpectedValueException
+	 *	@expectedException	InvalidArgumentException
 	 */
 	public function testCompareToException($value) {
 		$epoch = new Epoch('now', new \DateTimeZone('UTC'));
