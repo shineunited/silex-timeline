@@ -45,6 +45,36 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 		return $tests;
 	}
 
+	/**
+	 *	@dataProvider	hasTimelineProvider
+	 */
+	public function testHasTimeline(Epoch $epoch, $exists) {
+		if($exists) {
+			$this->assertTrue($epoch->hasTimeline());
+		} else {
+			$this->assertFalse($epoch->hasTimeline());
+		}
+	}
+
+	public function hasTimelineProvider() {
+		$tests = [];
+
+		$timezone = new \DateTimeZone('UTC');
+		$timeline = new Timeline($timezone);
+
+		$timeline->epoch = '15-Aug-05 15:52:00 +0000';
+		$tests['exists-1'] = [$timeline->epoch, true];
+
+		$epoch1 = new Epoch('15-Aug-05 15:52:00 +0000', $timezone);
+		$epoch1->setTimeline($timeline);
+		$tests['exists-2'] = [$epoch1, true];
+
+		$epoch2 = new Epoch('15-Aug-05 15:52:00 +0000', $timezone);
+		$tests['missing-1'] = [$epoch2, false];
+
+		return $tests;
+	}
+
 	public function testGetTimeline() {
 		$timezone = new \DateTimeZone('UTC');
 		$epoch = new Epoch('now', $timezone);
@@ -120,6 +150,58 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 		} else {
 			$this->assertTrue($epoch2->isAfter($epoch2));
 		}
+	}
+
+	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsUpcoming($datetime1, $datetime2, $diff) {
+		$timeline = new Timeline('UTC');
+
+		$timeline->now = $datetime1;
+		$timeline->test = $datetime2;
+
+		if($diff < 0) {
+			$this->assertTrue($timeline->test->isUpcoming());
+		} else {
+			$this->assertFalse($timeline->test->isUpcoming());
+		}
+	}
+
+	/**
+	 *	@expectedException	UnexpectedValueException
+	 */
+	public function testIsUpcomingException() {
+		$timezone = new \DateTimeZone('UTC');
+		$epoch = new Epoch('now', $timezone);
+
+		$epoch->isUpcoming();
+	}
+
+	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsComplete($datetime1, $datetime2, $diff) {
+		$timeline = new Timeline('UTC');
+
+		$timeline->now = $datetime1;
+		$timeline->test = $datetime2;
+
+		if($diff < 0) {
+			$this->assertFalse($timeline->test->isComplete());
+		} else {
+			$this->assertTrue($timeline->test->isComplete());
+		}
+	}
+
+	/**
+	 *	@expectedException	UnexpectedValueException
+	 */
+	public function testIsCompleteException() {
+		$timezone = new \DateTimeZone('UTC');
+		$epoch = new Epoch('now', $timezone);
+
+		$epoch->isComplete();
 	}
 
 	public function comparisonProvider() {

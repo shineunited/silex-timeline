@@ -24,6 +24,88 @@ class TimelineTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsUpcoming($now, $time, $complete) {
+		$timeline = new Timeline('UTC', $this->listEvents());
+		$timeline['now'] = $now;
+
+		if($complete) {
+			$this->assertFalse($timeline->isUpcoming($time));
+		} else {
+			$this->assertTrue($timeline->isUpcoming($time));
+		}
+	}
+
+	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsComplete($now, $time, $complete) {
+		$timeline = new Timeline('UTC', $this->listEvents());
+		$timeline['now'] = $now;
+
+		if($complete) {
+			$this->assertTrue($timeline->isComplete($time));
+		} else {
+			$this->assertFalse($timeline->isComplete($time));
+		}
+	}
+
+	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsBefore($now, $time, $complete) {
+		$timeline = new Timeline('UTC', $this->listEvents());
+		$timeline['now'] = $now;
+
+		if($complete) {
+			$this->assertFalse($timeline->isBefore($time));
+		} else {
+			$this->assertTrue($timeline->isBefore($time));
+		}
+	}
+
+	/**
+	 *	@dataProvider	comparisonProvider
+	 */
+	public function testIsAfter($now, $time, $complete) {
+		$timeline = new Timeline('UTC', $this->listEvents());
+		$timeline['now'] = $now;
+
+		if($complete) {
+			$this->assertTrue($timeline->isAfter($time));
+		} else {
+			$this->assertFalse($timeline->isAfter($time));
+		}
+	}
+
+	public function comparisonProvider() {
+		$tests = [];
+
+		$tests['upcoming-1'] = ['12-Dec-2016 23:27:59', 'perigee', false];
+		$tests['upcoming-2'] = ['14-Dec-2016 00:06:59', 'fullmoon', false];
+		$tests['upcoming-3'] = ['25-Dec-2016 05:55:59', 'apogee', false];
+		$tests['upcoming-4'] = ['29-Dec-2016 06:53:59', 'newmoon', false];
+
+		$tests['upcoming-5'] = ['01-Dec-2016 00:00:00', 'perigee', false];
+		$tests['upcoming-6'] = ['01-Dec-2016 00:00:00', 'fullmoon', false];
+		$tests['upcoming-7'] = ['01-Dec-2016 00:00:00', 'apogee', false];
+		$tests['upcoming-8'] = ['01-Dec-2016 00:00:00', 'newmoon', false];
+
+		$tests['complete-1'] = ['12-Dec-2016 23:28:00', 'perigee', true];
+		$tests['complete-2'] = ['14-Dec-2016 00:07:00', 'fullmoon', true];
+		$tests['complete-3'] = ['25-Dec-2016 05:56:00', 'apogee', true];
+		$tests['complete-4'] = ['29-Dec-2016 06:54:00', 'newmoon', true];
+
+		$tests['complete-5'] = ['31-Dec-2016 00:00:00', 'perigee', true];
+		$tests['complete-6'] = ['31-Dec-2016 00:00:00', 'fullmoon', true];
+		$tests['complete-7'] = ['31-Dec-2016 00:00:00', 'apogee', true];
+		$tests['complete-8'] = ['31-Dec-2016 00:00:00', 'newmoon', true];
+
+		return $tests;
+	}
+
+	/**
 	 *	@dataProvider	offsetExistsProvider
 	 */
 	public function testOffsetExists($index, $found) {
