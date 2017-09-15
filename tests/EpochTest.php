@@ -55,11 +55,14 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame($timeline, $epoch->getTimeline());
 	}
 
+	/**
+	 *	@expectedException	UnexpectedValueException
+	 */
 	public function testGetTimelineException() {
 		$timezone = new \DateTimeZone('UTC');
 		$epoch = new Epoch('now', $timezone);
 
-		$this->expectException(\UnexpectedValueException::class);
+		//$this->expectException(\UnexpectedValueException::class);
 		$epoch->getTimeline();
 	}
 
@@ -244,11 +247,12 @@ class EpochTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 *	@dataProvider	comparisonExceptionProvider
+	 *	@expectedException	UnexpectedValueException
 	 */
 	public function testCompareToException($value) {
 		$epoch = new Epoch('now', new \DateTimeZone('UTC'));
 
-		$this->expectException(\InvalidArgumentException::class);
+		//$this->expectException(\InvalidArgumentException::class);
 		$epoch->compareTo($value);
 	}
 
