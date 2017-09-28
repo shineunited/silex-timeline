@@ -49,6 +49,8 @@ class TimelineServiceProvider implements ServiceProviderInterface {
 		if(isset($app['twig'])) {
 			$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 				$twig->addExtension(new TimelineExtension($app['timeline']));
+
+				return $twig;
 			}));
 		}
 
